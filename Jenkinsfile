@@ -102,7 +102,7 @@ pipeline {
                 script {
                     if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat'''
-                        for %f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-develop"') do set containerId=%%i
+                        for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-develop"') do set containerId=%%i
                         echo %containerId%
                         if "%containerId%" == "" (
                             echo 'No Container Running'
