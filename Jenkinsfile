@@ -20,6 +20,7 @@ pipeline {
                 script {
                     scmVars = checkout scm
                     echo '${env.GIT_BRAMCH}'
+                    echo scmVars.GIT_BRAMCH
                 }
             }
         }
