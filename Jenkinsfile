@@ -5,7 +5,7 @@ pipeline {
         maven 'M3'
     }
     environment {
-        GIT_BRAMCH='${params.Environment}'
+        GIT_BRANCH='${params.Environment}'
     }
     options {
         timestamps()
@@ -19,8 +19,8 @@ pipeline {
             steps {
                 script {
                     scmVars = checkout scm
-                    echo '${env.GIT_BRAMCH}'
-                    echo scmVars.GIT_BRAMCH
+                    echo '${env.GIT_BRANCH}'
+                    echo scmVars.GIT_BRANCH
                 }
             }
         }
@@ -76,9 +76,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                    if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat 'docker build -t nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER% --no-cache -f Dockerfile .'
-                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                    } else if (scmVars.GIT_BRANCH == 'origin/feature') {
                         bat 'docker build -t nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                     }
                 }
@@ -88,9 +88,9 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                    if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat 'docker push nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
-                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                    } else if (scmVars.GIT_BRANCH == 'origin/feature') {
                         bat 'docker push -t nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
                     }
                 }
@@ -100,7 +100,7 @@ pipeline {
         stage('Stop Running Containers') {
             steps {
                 script {
-                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                    if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat'''
                         for %f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-develop"') do set containerId=%%i
                         echo %containerId%
@@ -111,7 +111,7 @@ pipeline {
                             docker rm -f %containerId%
                         )
                         '''
-                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                    } else if (scmVars.GIT_BRANCH == 'origin/feature') {
                         bat'''
                         for %f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-feature"') do set containerId=%%i
                         echo %containerId%
@@ -130,9 +130,9 @@ pipeline {
         stage ('Docker Deployment') {
             steps {
                 script {
-                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                    if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat 'docker run nagp-devops-exam-final-develop -d -p 6500:8080 nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
-                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                    } else if (scmVars.GIT_BRANCH == 'origin/feature') {
                         bat 'docker run nagp-devops-exam-final-feature -d -p 6600:8080 nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
                     }
 
