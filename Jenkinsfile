@@ -87,6 +87,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
+                bat 'docker login -u nimit07 -p Human@123'
                 script {
                     if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat 'docker push nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
@@ -131,9 +132,9 @@ pipeline {
             steps {
                 script {
                     if (scmVars.GIT_BRANCH == 'origin/develop') {
-                        bat 'docker run nagp-devops-exam-final-develop -d -p 6500:8080 nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
+                        bat 'docker run -i nagp-devops-exam-final-develop -d -p 6500:8080 nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
                     } else if (scmVars.GIT_BRANCH == 'origin/feature') {
-                        bat 'docker run nagp-devops-exam-final-feature -d -p 6600:8080 nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
+                        bat 'docker run -i nagp-devops-exam-final-feature -d -p 6600:8080 nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
                     }
 
                 }
