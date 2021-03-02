@@ -18,8 +18,8 @@ pipeline {
         stage ('Checkout') {
             steps {
                 script {
-                    scmVars = checkout scm
-                    echo '${env.GIT_BRANCH}'
+                    scmVars = checkout scm 
+                    echo "${env.GIT_BRANCH}"
                     echo scmVars.GIT_BRANCH
                 }
             }
