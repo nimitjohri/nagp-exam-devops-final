@@ -72,9 +72,71 @@ pipeline {
         }
 
 
-        // stage('Docker Build') {
+        stage('Docker Build') {
+            steps {
+                script {
+                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                        bat 'docker build -t nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                        bat 'docker build -t nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    }
+                }
+            }
+        }
 
-        // }
+        stage('Docker Push') {
+            steps {
+                script {
+                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                        bat 'docker push nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
+                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                        bat 'docker push -t nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
+                    }
+                }
+            }
+        }
 
+        stage('Stop Running Containers') {
+            steps {
+                script {
+                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                        bat'''
+                        for %f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-develop"') do set containerId=%%i
+                        echo %containerId%
+                        if "%containerId%" == "" (
+                            echo 'No Container Running'
+                        ) else (
+                            docker stop %containerId%
+                            docker rm -f %containerId%
+                        )
+                        '''
+                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                        bat'''
+                        for %f %%i in ('docker ps -aqf "name=^nagp-devops-exam-final-feature"') do set containerId=%%i
+                        echo %containerId%
+                        if "%containerId%" == "" (
+                            echo 'No Container Running'
+                        ) else (
+                            docker stop %containerId%
+                            docker rm -f %containerId%
+                        )
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage ('Docker Deployment') {
+            steps {
+                script {
+                    if (scmVars.GIT_BRAMCH == 'origin/develop') {
+                        bat 'docker run nagp-devops-exam-final-develop -d -p 6500:8080 nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
+                    } else if (scmVars.GIT_BRAMCH == 'origin/feature') {
+                        bat 'docker run nagp-devops-exam-final-feature -d -p 6600:8080 nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
+                    }
+
+                }
+            }
+        }
     }
 }
