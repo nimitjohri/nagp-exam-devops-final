@@ -5,7 +5,7 @@ pipeline {
         maven 'M3'
     }
     environment {
-        GIT_BRAMCH: ${params.environment}
+        GIT_BRAMCH: ${params.Environment}
     }
     options {
         timestamps()
