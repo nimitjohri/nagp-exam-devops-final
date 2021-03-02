@@ -35,7 +35,7 @@ pipeline {
         stage ('Unit Testing') {
             steps {
                 script {
-                    bat 'mvn Test'
+                    bat 'mvn test'
                 }
             }
         }
