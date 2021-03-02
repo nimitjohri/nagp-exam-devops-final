@@ -92,7 +92,7 @@ pipeline {
                     if (scmVars.GIT_BRANCH == 'origin/develop') {
                         bat 'docker push nimit07/nagp-devops-exam-final-develop:%BUILD_NUMBER%'
                     } else if (scmVars.GIT_BRANCH == 'origin/feature') {
-                        bat 'docker push -t nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
+                        bat 'docker push nimit07/nagp-devops-exam-final-feature:%BUILD_NUMBER%'
                     }
                 }
             }
@@ -141,4 +141,10 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+        }
+    }
+
 }
